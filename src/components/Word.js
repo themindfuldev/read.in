@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { parseString } from 'xml2js';
+import { firstCharLowerCase } from 'xml2js/lib/processors';
 import './Word.css';
 
 class Word extends Component {
@@ -9,14 +10,21 @@ class Word extends Component {
 
   parseResponse(xml) {
     return new Promise((resolve, reject) => {
-      parseString(xml, (error, result) => {
-        if (error) {
-          console.error(error);
-          reject({ error });
-        }
+      parseString(
+        xml,
+        {
+          explicitArray: false,
+          tagNameProcessors: [firstCharLowerCase]
+        },
+        (error, result) => {
+          if (error) {
+            console.error(error);
+            reject({ error });
+          }
 
-        resolve(result);
-      });
+          resolve(result);
+        }
+      );
     });
   }
 
@@ -31,7 +39,7 @@ class Word extends Component {
       .then(
         json => {
           this.setState({
-            ...json.WordDefinition,
+            ...json.wordDefinition,
             isLoaded: true
           });
         },
@@ -45,19 +53,18 @@ class Word extends Component {
   }
 
   renderDefinition(Definition, index) {
-    const [Dictionary] = Definition.Dictionary,
-      [WordDefinition] = Definition.WordDefinition;
+    const { dictionary, wordDefinition } = Definition;
 
     return (
       <li className="definition" key={`definition-${index}`}>
-        <p>From {Dictionary.Name}</p>
-        <blockquote>{WordDefinition}</blockquote>
+        <p>From {dictionary.Name}</p>
+        <blockquote>{wordDefinition}</blockquote>
       </li>
     );
   }
 
   render() {
-    const { isLoaded, error, Word, Definitions } = this.state;
+    const { isLoaded, error, word, definitions } = this.state;
     if (!isLoaded) {
       return <div>Loading...</div>;
     } else if (error) {
@@ -68,7 +75,7 @@ class Word extends Component {
           <h2>{Word}</h2>
 
           <ul className="definitions">
-            {Definitions[0].Definition.map(this.renderDefinition)}
+            {definitions.definition.map(this.renderDefinition)}
           </ul>
         </div>
       );
