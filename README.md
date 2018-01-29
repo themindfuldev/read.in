@@ -1,7 +1,8 @@
 # read.in
 
-
 ## Link
+
+http://services.aonaware.com/DictService/DictService.asmx
 
 Web parser: https://mercury.postlight.com/web-parser/
 Words API: https://www.wordsapi.com

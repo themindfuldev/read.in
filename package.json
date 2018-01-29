@@ -1,11 +1,13 @@
 {
   "name": "read.in",
+  "description": "A text reader with dictionary capabilities written in React",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-scripts": "1.1.0"
+    "react-scripts": "1.1.0",
+    "xml2js": "^0.4.19"
   },
   "scripts": {
     "start": "react-scripts start",
