@@ -8,7 +8,7 @@ class Word extends Component {
     isLoaded: false
   };
 
-  parseResponse(xml) {
+  parseXml(xml) {
     return new Promise((resolve, reject) => {
       parseString(
         xml,
@@ -28,6 +28,17 @@ class Word extends Component {
     });
   }
 
+  simplifyResponse(json) {
+    const wordDefinition = json.wordDefinition;
+
+    return {
+      word: wordDefinition.word,
+      definitions: wordDefinition.definitions.definition.filter(
+        definition => definition.dictionary.id !== 'easton'
+      )
+    };
+  }
+
   componentWillMount() {
     fetch(
       `http://services.aonaware.com/DictService/DictService.asmx/Define?word=${
@@ -35,19 +46,14 @@ class Word extends Component {
       }`
     )
       .then(response => response.text())
-      .then(xml => this.parseResponse(xml))
+      .then(xml => this.parseXml(xml))
+      .then(json => this.simplifyResponse(json))
       .then(
         json => {
-          this.setState({
-            ...json.wordDefinition,
-            isLoaded: true
-          });
+          this.setState({ ...json, isLoaded: true });
         },
         error => {
-          this.setState({
-            error,
-            isLoaded: true
-          });
+          this.setState({ error, isLoaded: true });
         }
       );
   }
@@ -57,7 +63,7 @@ class Word extends Component {
 
     return (
       <li className="definition" key={`definition-${index}`}>
-        <p>From {dictionary.Name}</p>
+        <p>From {dictionary.name}</p>
         <blockquote>{wordDefinition}</blockquote>
       </li>
     );
@@ -72,10 +78,10 @@ class Word extends Component {
     } else {
       return (
         <div className="word">
-          <h2>{Word}</h2>
+          <h2>{word}</h2>
 
           <ul className="definitions">
-            {definitions.definition.map(this.renderDefinition)}
+            {definitions.map(this.renderDefinition)}
           </ul>
         </div>
       );
