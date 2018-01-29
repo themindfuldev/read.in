@@ -1,0 +1,21 @@
+.word-details {
+  font-size: 1rem;
+  font-weight: normal;
+}
+
+.word-details > * {
+  margin-left: 1.5em;
+}
+
+.word-details .pronounciation {
+  color: gray;
+}
+
+.meanings {
+  list-style-type: decimal;
+}
+
+.meaning h5 {
+  text-transform: uppercase;
+  margin-bottom: 0.75em;
+}
