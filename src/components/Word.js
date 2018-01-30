@@ -28,14 +28,15 @@ class Word extends Component {
     });
   }
 
-  simplifyResponse(json) {
-    const wordDefinition = json.wordDefinition;
+  transformData(json) {
+    const wordDefinition = json.wordDefinition,
+      definitions = wordDefinition.definitions.definition.filter(
+        definition => definition.dictionary.id !== 'easton'
+      );
 
     return {
       word: wordDefinition.word,
-      definitions: wordDefinition.definitions.definition.filter(
-        definition => definition.dictionary.id !== 'easton'
-      )
+      definitions
     };
   }
 
@@ -47,7 +48,7 @@ class Word extends Component {
     )
       .then(response => response.text())
       .then(xml => this.parseXml(xml))
-      .then(json => this.simplifyResponse(json))
+      .then(json => this.transformData(json))
       .then(
         json => {
           this.setState({ ...json, isLoaded: true });
@@ -58,13 +59,15 @@ class Word extends Component {
       );
   }
 
-  renderDefinition(Definition, index) {
-    const { dictionary, wordDefinition } = Definition;
+  renderDefinition(definition, index) {
+    const { dictionary, wordDefinition } = definition;
 
     return (
       <li className="definition" key={`definition-${index}`}>
         <p>From {dictionary.name}</p>
-        <blockquote>{wordDefinition}</blockquote>
+        <blockquote>
+          <pre>{wordDefinition}</pre>
+        </blockquote>
       </li>
     );
   }
